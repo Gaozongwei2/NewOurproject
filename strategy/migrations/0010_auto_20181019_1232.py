@@ -12,16 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='scommit',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('commit', models.TextField()),
-                ('time', models.DateTimeField(max_length=20)),
-                ('sid', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='strategy.strategy')),
-                ('userid', models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='users.user')),
-            ],
-        ),
         migrations.DeleteModel(
             name='test',
         ),

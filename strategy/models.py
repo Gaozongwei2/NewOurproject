@@ -1,6 +1,6 @@
 from django.db import models
 from users.models import *
-
+from travelnote.models import *
 
 # 攻略状态
 class condition(models.Model):
@@ -39,12 +39,13 @@ class sccontent(models.Model):
     file1 = models.CharField(max_length=50, null=True)
     file2 = models.CharField(max_length=50, null=True)
 
-# 攻略评论
+# # 攻略评论
 class scommit(models.Model):
     commit = models.TextField()
     time = models.DateTimeField(max_length=20)
     sid = models.ForeignKey(to='strategy', to_field='id', on_delete=models.CASCADE)
     userid = models.ForeignKey(to='users.user',to_field='id',on_delete=models.CASCADE,default=1)
+
 
 # 攻略收藏
 class scollection(models.Model):

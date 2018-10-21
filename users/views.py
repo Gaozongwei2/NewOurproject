@@ -5,7 +5,13 @@ import json
 from . import models
 from .utils.util_token import *
 import re
-# Create your views here.
+
+# 获取用户信息
+def getuser(res):
+    user = models.user.objects.filter(username__icontains=res).values()
+    return user
+
+
 # 用户中心
 def index(request):
     if request.method =="GET":

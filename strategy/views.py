@@ -1,28 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, request
-from . import models
+
+# from django.db import models
 import json
-from users import models
+# from users import models
+# from travelnote import models
+# from users.models import *
+from travelnote.views import *
+from users.views import *
+from . import models
 from django.db import connection
-
-
-# Create your views here.
-
-# 根据id查询攻略
-# def searchbyuserid(request,userid):
-#     try:
-#         mystrategys = models.strategy.objects.filter(userid = userid).values("title","time","scover__url","state","good","view","sccontent__contents","condition__condition")
-#         mystrategys = list(mystrategys)
-#         print(mystrategys)
-#         for item in mystrategys:
-#             item["time"] = item["time"].strftime("%Y-%m-%d")
-#         mystrategys = json.dumps(mystrategys)
-#
-#         return HttpResponse(mystrategys)
-#     except Exception as ex:
-#         print(ex)
-#         return JsonResponse({"code":"500"})
-
 
 def insertdetail(request):
     if request.method == "GET":
@@ -66,7 +53,6 @@ def show(request):
     # except Exception as ex:
     #     print(ex)
     #     return JsonResponse({"code":"500"})
-
 def edit(request):
     pass
     # if request.method=="POST":
@@ -85,7 +71,6 @@ def edit(request):
     #         return JsonResponse({"code": 404})
     # elif request.method == "GET":
     #     return JsonResponse({"code": 100})
-
 def insertdetail(request):
     if request.method == "GET":
         data = models.test.objects.filter(id="2").values('content')
@@ -109,7 +94,6 @@ def insertdetail(request):
         return HttpResponse('')
     else:
         return HttpResponse("失败")
-
 # 卡片展示所有攻略
 def showall(request):
     try:
@@ -124,34 +108,93 @@ def showall(request):
     except Exception as ex:
         print(ex)
         return JsonResponse({"code":"505"})
-
+    # 格式转化
+def timechange(contents):
+        contents = list(contents)
+        for item in contents:
+            item["time"] = item["time"].strftime("%Y-%m-%d")
+        contents = json.dumps(contents)
+        return contents
 # 根据条件搜索 卡片展示所有攻略
 def searchbysome(request,stype,scondition):
-    if request.method=="GET":
-        # 转化stype
-        stype = int(stype)
+    print("hello")
+    print(stype)
+    print(scondition)
+    if request.method =="GET":
+        print("this is get")
+        # sposts = models.strategy.objects.filter(title__icontains=scondition).values("id", "title", "state", "time", "good",
+        #                                                                    "view", "condition__condition")
+        #
 
-        result=getType(stype,scondition)
-        try:
-            return JsonResponse(json.dumps(list(result),ensure_ascii=False),safe=False)
-        except Exception as ex:
-            print(ex)
-            return JsonResponse({"code": "500"})
-    elif request.method=="POST":
-        return JsonResponse({"code": "505"})
+        if stype=="all":
+            sposts = models.strategy.objects.filter(title__icontains=scondition).values("id", "title", "state", "time","good","view", "condition__condition")
+            sposts = timechange(sposts)
+            tpost = gettravelnote(scondition)
+            tpost = timechange(tpost)
+            result = {
+                "sposts":sposts,
+                "tpost":tpost
+            }
+            return HttpResponse(result)
+        #     print("this is all")
+        #     sposts = models.strategy.objects.filter(title__ = scondition).values("id","title","state","time","good","view","condition__condition")
+        #     result = sposts
+            # print(sposts)
+            # tposts = gettravelnote(scondition)
+            # print(tposts)
+            # user = getuser(scondition)
+            # print(user)
+            # result = {
+            #     "sposts":sposts,
+            #     "tposts":tposts,
+            #     "user":user,
+            # }
+
+        # elif stype == "strategy":
+        #     sposts = models.strategy.objects.filter(title__icontains= scondition).values()
+        #     result = {
+        #         "sposts": sposts,
+        #     }
+        # elif stype == "travelnote":
+        #     tposts = models.travelnote.objects.filter(title__icontains= scondition).values()
+        #     result = {
+        #         "tposts": tposts,
+        #     }
+        # elif stype == "user":
+        #     user = models.user.objects.filter(username__icontains=scondition).values()
+        #     result = {
+        #         "user" : user,
+        #     }
+        # else:
+        #     print("post")
+        #
+        # return result
+    #     # 转化stype
+    #     stype = int(stype)
+    #
+    #     result=getType(stype,scondition)
+    #     try:
+    #         return JsonResponse(json.dumps(list(result),ensure_ascii=False),safe=False)
+    #     except Exception as ex:
+    #         print(ex)
+    #         return JsonResponse({"code": "500"})
+    # elif request.method=="POST":
+    #     return JsonResponse({"code": "505"})
 
 # 获取搜索条件类型
 def getType(stype,scondition):
-    if stype==1:
+    if stype=="all":
         res='title'
         posts = models.strategy.objects.filter(title__contains=scondition).values(res)
-    elif stype==2:
+    elif stype=="strategy":
         res='state'
         posts = models.strategy.objects.filter(state__contains=scondition).values(res)
-    else:
+    elif stype == "travelnote":
         res='userid'
         posts = models.strategy.objects.filter(userid__username=scondition).values(res)
-
+    elif stype == "user":
+        # posts = models.user.objects.filter(username=scondition).values(res)
+        pass
     return posts
 
 # 用户查询自己的攻略(卡片)

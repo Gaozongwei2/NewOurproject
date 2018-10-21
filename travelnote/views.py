@@ -4,7 +4,11 @@ import json
 from . import models
 import time
 from datetime import datetime
-# Create your views here.
+# 查询方法
+def gettravelnote(res):
+    tposts = models.travelnote.objects.filter(title__icontains=res).values()
+    print(tposts)
+    return tposts
 # 查询所有的游记``
 def searchall(request):
 
