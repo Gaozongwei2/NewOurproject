@@ -97,12 +97,9 @@ def insertdetail(request):
 # 卡片展示所有攻略
 def showall(request):
     try:
-    #
         allstrategy = models.strategy.objects.filter().values('scover__url','condition__strategy__title','condition__strategy__good','condition__strategy__view','condition__strategy__userid','condition__strategy__userid')
         listallstrategy = list(allstrategy)
-
         listallstrategy = json.dumps(listallstrategy)
-
         print(listallstrategy)
         return HttpResponse(listallstrategy)
     except Exception as ex:
@@ -110,9 +107,17 @@ def showall(request):
         return JsonResponse({"code":"505"})
     # 格式转化
 def timechange(contents):
+    if len(contents):
         contents = list(contents)
         for item in contents:
             item["time"] = item["time"].strftime("%Y-%m-%d")
+        contents = json.dumps(contents)
+        return contents
+def timechangeu(contents):
+    if len(contents):
+        contents = list(contents)
+        for item in contents:
+            item["birthday"] = item["birthday"].strftime("%Y-%m-%d")
         contents = json.dumps(contents)
         return contents
 # 根据条件搜索 卡片展示所有攻略
@@ -122,6 +127,23 @@ def searchbysome(request,stype,scondition):
     print(scondition)
     if request.method =="GET":
         print("this is get")
+        sposts = models.strategy.objects.filter(title__icontains=scondition,condition__condition="已发布").values("id","title","state","time","good","view","userid_id","userid__username","userid__icno__imageurl")
+        sposts = timechange(sposts)
+        tpost = gettravelnote(scondition)
+        tpost = timechange(tpost)
+        user = getuser(scondition)
+        user = timechangeu(user)
+
+        result = [
+            sposts,
+            tpost,
+            user
+        ]
+        result = timechange(result)
+
+
+        return HttpResponse(result)
+
         # sposts = models.strategy.objects.filter(title__icontains=scondition).values("id", "title", "state", "time", "good",
         #                                                                    "view", "condition__condition")
         #

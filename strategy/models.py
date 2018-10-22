@@ -14,7 +14,6 @@ class strategy(models.Model):
     # 浏览量
     view = models.IntegerField()
     userid = models.ForeignKey(to='users.user',to_field='id',on_delete=models.CASCADE,default=1)
-
     condition = models.ForeignKey(to='condition',to_field='id', on_delete=models.CASCADE)
     file1 = models.CharField(max_length=100, null=True)
     file2 = models.CharField(max_length=100, null=True)
