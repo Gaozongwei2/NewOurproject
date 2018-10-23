@@ -2,8 +2,11 @@ from django.shortcuts import render
 # from django.http import HttpResponse,JsonResponse
 from django.http import *
 import json
-from . import models
-from .utils.util_token import *
+from users import models
+from travelnote.views import tnum
+# from strategy import models
+# from strategy.models import *
+from strategy import models
 import re
 
 # 显示游记收藏数
@@ -223,7 +226,7 @@ def usertravelnotes(request,uid):
     try:
         # 时间 标题 点赞数 浏览量  封皮
         utrav = models.travelnote.objects.filter(userid_id = uid).values('title','time','good','view','cover__url','content')
-        utrav = list(utrav)
+        utrav = list(utrav)[:5]
         for item in utrav:
             item["time"] = item["time"].strftime("%Y-%m-%d")
         return JsonResponse(utrav, safe=False)
@@ -235,7 +238,7 @@ def userstrategy(request,uid):
     try:
         # 时间 标题 点赞数 浏览量  封皮
         ustra = models.strategy.objects.filter(userid_id = uid).values('title','time','good','view','scover__url','content')
-        ustra = list(ustra)
+        ustra = list(ustra)[:5]
         for item in ustra:
             item["time"] = item["time"].strftime("%Y-%m-%d")
         print(ustra)
@@ -254,8 +257,10 @@ def myfocus(request, id):
     ffans = []
     focusid = models.focus.objects.filter(userid=id).values("uid")
     focusid = list(focusid)
+    print(focusid)
     for i in range(len(focusid)):
         message.append(list(models.user.objects.filter(id = focusid[i]["uid"]).values("id","username","icno__imageurl"))[0])
+        print(message)
         id = focusid[i]["uid"]
         # 用户游记数量
         num = tnum(id)

@@ -20,5 +20,20 @@ urlpatterns = [
 
 
     url(r'hotcity/',views.hotcity, name="hotcity"),
+    url(r'unfocus/(?P<uid>\w+)/(?P<uid_id>\w+)/$',views.unfocus, name="unfocus"),
+    # 查询用户关注
+    url(r'focus/(?P<uid>\w+)/$', views.focus, name="focus"),
+    # 取消用户关注
+    url(r'unfocus/(?P<uid>\w+)/(?P<uid_id>\w+)/$', views.unfocus, name="unfocus"),
+    # 查询用户收藏攻略
+    url(r'colstrategy/(?P<uid>\w+)/$', views.colstrategy, name="colstrategy"),
+    # 查看用户收藏游记
+    url(r'coltravelnote/(?P<uid>\w+)/$', views.coltravelnote, name="coltravelnote"),
+    # 取消用户收藏攻略
+    url(r'uncolstrategy/(?P<cstrid>\w+)/(?P<uid>\w+)/$', views.uncolstrategy, name="uncolstrategy"),
 
+    # 查询用户游记
+    url(r'usertravelnotes/(?P<uid>\w+)/$', views.usertravelnotes, name="usertravelnotes"),
+    # 查询用户攻略
+    url(r'userstrategy/(?P<uid>\w+)/$', views.userstrategy, name="userstrategy"),
 ]
