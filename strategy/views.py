@@ -1,16 +1,17 @@
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, request
 
-# from django.db import models
 import json
-# from users import models
-# from travelnote import models
-# from users.models import *
-from travelnote.views import *
-from users.views import *
-from . import models
+import time
 from django.db import connection
+from travelnote.models import *
+from users.views import updatemark
+from django.http import *
+import json
+from . import models
 
+
+# from travelnote.models import *
 def insertdetail(request):
     if request.method == "GET":
         data = models.test.objects.filter().values()
@@ -20,10 +21,9 @@ def insertdetail(request):
         data = request.POST.get("content")
         print(data)
         data = {
-            "content":str(data)
+            "content": str(data)
         }
         # data = json.loads(data)
-
 
         # data = {
         #     "content":''
@@ -35,9 +35,10 @@ def insertdetail(request):
     else:
         return HttpResponse("失败")
 
-
     # 插入详情
     # Create your views here.
+
+
 def show(request):
     # 帖子id
     pass
@@ -53,6 +54,8 @@ def show(request):
     # except Exception as ex:
     #     print(ex)
     #     return JsonResponse({"code":"500"})
+
+
 def edit(request):
     pass
     # if request.method=="POST":
@@ -71,6 +74,8 @@ def edit(request):
     #         return JsonResponse({"code": 404})
     # elif request.method == "GET":
     #     return JsonResponse({"code": 100})
+
+
 def insertdetail(request):
     if request.method == "GET":
         data = models.test.objects.filter(id="2").values('content')
@@ -94,166 +99,188 @@ def insertdetail(request):
         return HttpResponse('')
     else:
         return HttpResponse("失败")
+
+
 # 卡片展示所有攻略
 def showall(request):
     try:
-        allstrategy = models.strategy.objects.filter().values('scover__url','condition__strategy__title','condition__strategy__good','condition__strategy__view','condition__strategy__userid','condition__strategy__userid')
-        listallstrategy = list(allstrategy)
-        listallstrategy = json.dumps(listallstrategy)
+        allstrategy = models.strategy.objects.filter().values('id', "title", 'time', "scover__url",
+                                                              "condition__condition", "good", "view", "state",
+                                                              "userid_id", "userid__username", "userid__icno__imageurl")
+        listallstrategy = timechange(allstrategy)
         print(listallstrategy)
         return HttpResponse(listallstrategy)
     except Exception as ex:
         print(ex)
-        return JsonResponse({"code":"505"})
+        return JsonResponse({"code": "505"})
     # 格式转化
+
+
 def timechange(contents):
+    contents = list(contents)
     if len(contents):
-        contents = list(contents)
         for item in contents:
+            print(type(item))
             item["time"] = item["time"].strftime("%Y-%m-%d")
         contents = json.dumps(contents)
-        return contents
+        print(contents)
+        print(type(contents))
+    else:
+        contents.append({"this":"nodata"})
+        contents = json.dumps(contents)
+        print("haha"+contents)
+        print(type(contents))
+    return contents
+
+
 def timechangeu(contents):
+    contents = list(contents)
     if len(contents):
-        contents = list(contents)
         for item in contents:
+            print(item)
             item["birthday"] = item["birthday"].strftime("%Y-%m-%d")
         contents = json.dumps(contents)
-        return contents
+    else:
+        contents = [{"result": "nodata"}]
+    return contents
+
+
 # 根据条件搜索 卡片展示所有攻略
-def searchbysome(request,stype,scondition):
-    print("hello")
-    print(stype)
-    print(scondition)
-    if request.method =="GET":
+def searchbysome(request, index, scondition):
+    if request.method == "GET":
         print("this is get")
-        sposts = models.strategy.objects.filter(title__icontains=scondition,condition__condition="已发布").values("id","title","state","time","good","view","userid_id","userid__username","userid__icno__imageurl")
-        sposts = timechange(sposts)
-        tpost = gettravelnote(scondition)
-        tpost = timechange(tpost)
-        user = getuser(scondition)
-        user = timechangeu(user)
+        if (index == "all"):
+            # 攻略数据
+            if (scondition == "index"):
+                sposts = models.strategy.objects.filter( condition_id="2").values("id",
+                                                                                                              "title",
+                                                                                                              "state",
+                                                                                                              "time",
+                                                                                                              "good",
+                                                                                                              "view",
+                                                                                                              "userid_id",
+                                                                                                              "userid__username",
+                                                                                                              "userid__icno__imageurl")
+                sposts = timechange(sposts)
+                # 游记数据
+                tpost = models.travelnote.objects.filter( condition_id="2").values("title",
+                                                                                                               "state",
+                                                                                                               "time",
+                                                                                                               "good",
+                                                                                                               "view",
+                                                                                                               "userid_id",
+                                                                                                               "userid__username",
+                                                                                                               "userid__icno__imageurl")
+                print(tpost)
+                tpost = timechange(tpost)
+                # 用户数据
+                users = models.user.objects.filter().values("id", "username",
+                                                                                          "icno__imageurl")
+                users = json.dumps(list(users))
+                result = [
+                    sposts, tpost, users
+                ]
+            else:
+                scondition = scondition[:-5]
+                sposts = models.strategy.objects.filter(title__icontains=scondition, condition_id="2").values("id",
+                                                                                                              "title",
+                                                                                                              "state",
+                                                                                                              "time",
+                                                                                                              "good",
+                                                                                                              "view",
+                                                                                                              "userid_id",
+                                                                                                              "userid__username",
+                                                                                                              "userid__icno__imageurl")
+                sposts = timechange(sposts)
+                # 游记数据
+                tpost = models.travelnote.objects.filter(title__icontains=scondition, condition_id="2").values("title",
+                                                                                                               "state",
+                                                                                                               "time",
+                                                                                                               "good",
+                                                                                                               "view",
+                                                                                                               "userid_id",
+                                                                                                               "userid__username",
+                                                                                                               "userid__icno__imageurl")
+                print(tpost)
+                tpost = timechange(tpost)
+                # 用户数据
+                users = models.user.objects.filter().values("id", "username",
+                                                                                          "icno__imageurl")
+                users = json.dumps(list(users))
+                result = [
+                    {sposts},
+                    {tpost},
+                    {users}
+                ]
 
-        result = [
-            sposts,
-            tpost,
-            user
-        ]
-        result = timechange(result)
+        return HttpResponse(json.dumps(result))
 
-
-        return HttpResponse(result)
-
-        # sposts = models.strategy.objects.filter(title__icontains=scondition).values("id", "title", "state", "time", "good",
-        #                                                                    "view", "condition__condition")
-        #
-
-        if stype=="all":
-            sposts = models.strategy.objects.filter(title__icontains=scondition).values("id", "title", "state", "time","good","view", "condition__condition")
-            sposts = timechange(sposts)
-            tpost = gettravelnote(scondition)
-            tpost = timechange(tpost)
-            result = {
-                "sposts":sposts,
-                "tpost":tpost
-            }
-            return HttpResponse(result)
-        #     print("this is all")
-        #     sposts = models.strategy.objects.filter(title__ = scondition).values("id","title","state","time","good","view","condition__condition")
-        #     result = sposts
-            # print(sposts)
-            # tposts = gettravelnote(scondition)
-            # print(tposts)
-            # user = getuser(scondition)
-            # print(user)
-            # result = {
-            #     "sposts":sposts,
-            #     "tposts":tposts,
-            #     "user":user,
-            # }
-
-        # elif stype == "strategy":
-        #     sposts = models.strategy.objects.filter(title__icontains= scondition).values()
-        #     result = {
-        #         "sposts": sposts,
-        #     }
-        # elif stype == "travelnote":
-        #     tposts = models.travelnote.objects.filter(title__icontains= scondition).values()
-        #     result = {
-        #         "tposts": tposts,
-        #     }
-        # elif stype == "user":
-        #     user = models.user.objects.filter(username__icontains=scondition).values()
-        #     result = {
-        #         "user" : user,
-        #     }
-        # else:
-        #     print("post")
-        #
-        # return result
-    #     # 转化stype
-    #     stype = int(stype)
-    #
-    #     result=getType(stype,scondition)
-    #     try:
-    #         return JsonResponse(json.dumps(list(result),ensure_ascii=False),safe=False)
-    #     except Exception as ex:
-    #         print(ex)
-    #         return JsonResponse({"code": "500"})
-    # elif request.method=="POST":
-    #     return JsonResponse({"code": "505"})
-
-# 获取搜索条件类型
-def getType(stype,scondition):
-    if stype=="all":
-        res='title'
-        posts = models.strategy.objects.filter(title__contains=scondition).values(res)
-    elif stype=="strategy":
-        res='state'
-        posts = models.strategy.objects.filter(state__contains=scondition).values(res)
-    elif stype == "travelnote":
-        res='userid'
-        posts = models.strategy.objects.filter(userid__username=scondition).values(res)
-    elif stype == "user":
-        # posts = models.user.objects.filter(username=scondition).values(res)
-        pass
-    return posts
 
 # 用户查询自己的攻略(卡片)
 def searchbyuserid(request):
-    if request.method=="GET":
+    if request.method == "GET":
         try:
             uid = request.GET.get('userid')
-            strategy = models.strategy.objects.filter(userid=uid).values('scover__url','condition__strategy__title','condition__strategy__good','condition__strategy__view','condition__strategy__userid','condition__strategy__userid')
+            strategy = models.strategy.objects.filter(userid=uid).values('scover__url', 'condition__strategy__title',
+                                                                         'condition__strategy__good',
+                                                                         'condition__strategy__view',
+                                                                         'condition__strategy__userid',
+                                                                         'condition__strategy__userid')
             strategy = list(strategy)
             strategy = json.dumps(strategy)
             return HttpResponse(strategy)
         except Exception as ex:
             print(ex)
-            return JsonResponse({"code":"500"})
-    elif request.method=="POST":
+            return JsonResponse({"code": "500"})
+    elif request.method == "POST":
         return JsonResponse({"code": "505"})
 
+# 用户查询自己的攻略数量
+def searchcount(request,uid):
+    try:
+        strategy = models.strategy.objects.filter(userid=uid).values().count()
+        print(strategy)
+        return HttpResponse(strategy)
+    except Exception as ex:
+        print(ex)
+        return JsonResponse({"code":"500"})
+
 # 攻略详情展示
-def showdetail(request,postid):
-    if request.method=="POST":
+def showdetail(request, postid):
+    if request.method == "POST":
         try:
             contenttop = models.sccontent.objects.filter(sid=postid).values('contents')
-            commitbtm = models.scommit.objects.filter(sid=postid).values("commit","userid__username",'time')
+            commitbtm = models.scommit.objects.filter(sid=postid).values("commit", "userid__username", 'time')
 
             # 时间转换
             for item in commitbtm:
                 item["time"] = item["time"].strftime("%Y-%m-%d")
-            return JsonResponse({"contenttop":list(contenttop),"commitbtm":list(commitbtm)},json_dumps_params={"ensure_ascii":False})
+            return JsonResponse({"contenttop": list(contenttop), "commitbtm": list(commitbtm)},
+                                json_dumps_params={"ensure_ascii": False})
         except Exception as ex:
             print(ex)
-            return JsonResponse({"code":"500"})
-    elif request.method=="GET":
-        return JsonResponse({"code":"505"})
+            return JsonResponse({"code": "500"})
+    elif request.method == "GET":
+        return JsonResponse({"code": "505"})
+
 
 # 新建攻略
 def add(request):
     try:
+        # test data
+        # data1={
+        #         "title":"hoooooooooohhhhh",
+        #         "state":"hhhh",
+        #         "condition_id":2,
+        #         "cover":"oooo",
+        #         "time":"2018-9-4",
+        #     "good":11,
+        #     "view":66,
+        #     "userid_id":2,
+        #     "condition":2,
+        #     "contents":"1212121212121",
+        #     "url":"3333333333"
+        # }
         data1 =json.loads(request.body)
         # strategy
         data_strategy = {
@@ -263,32 +290,40 @@ def add(request):
             "good":data1["good"],
             "view":data1["view"],
             "userid_id": data1["userid_id"],
-            "condition_id": data1["condition"],
+            "condition_id": data1["condition"]
         }
         sstrategy = models.strategy.objects.create(**data_strategy)
-
         # contents
         data_contents = {
             "contents": data1["contents"],
             "sid_id":sstrategy.id
         }
         scontent = models.sccontent.objects.create(**data_contents)
-
         # cover
         data_cover = {
             "url":data1["url"],
             "sid_id": sstrategy.id
         }
         scover = models.scover.objects.create(**data_cover)
-        return JsonResponse({"code": "200"})
+        # 新建攻略后更新用户积分
+        if sstrategy and scontent and scover:
+            # 新建攻略用户所得积分
+            mark=30
+            updatemark(request,data1["userid_id"],mark)
+            # 更新成功
+            return  JsonResponse({"code": "200"})
+        else:
+            # 更新失败
+            return  JsonResponse({"code": "500"})
     except Exception as ex:
         print(ex)
         return JsonResponse({"code": "500"})
 
+
 # 根据postid更新攻略信息
-def update(request,postid):
+def update(request, postid):
     try:
-        if request.method =="POST":
+        if request.method == "POST":
             newdate = json.loads(request.body)
 
             # newdata = {
@@ -304,7 +339,8 @@ def update(request,postid):
             #     }
             # }
 
-            affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"],state=newdate["state"],condition_id=newdate["condition_id"])
+            affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"],
+                                                                           state=newdate["state"],                                                             condition_id=newdate["condition_id"])
             affect_rowsurl = models.scover.objects.filter(id=postid).update(url=newdate["cover"])
             affect_rowsimg = models.simages.objects.filter(id=postid).update(url=newdate["img"]["img1"])
         return JsonResponse({"code": "200"})
@@ -312,18 +348,17 @@ def update(request,postid):
         print(ex)
     return JsonResponse({"code": "500"})
 
+
 # 删除攻略
 def delete(request):
     try:
         sid = request.GET.get('sid_id')
-        pcontent = models.sccontent.objects.filter(sid_id = sid).delete()
-        pcommit = models.scommit.objects.filter(sid_id = sid).delete()
-        pcover = models.scover.objects.filter(sid_id = sid).delete()
-        pimage = models.simages.objects.filter(sid_id = sid).delete()
-        pstrate = models.strategy.objects.filter(id = sid).delete()
+        pcontent = models.sccontent.objects.filter(sid_id=sid).delete()
+        pcommit = models.scommit.objects.filter(sid_id=sid).delete()
+        pcover = models.scover.objects.filter(sid_id=sid).delete()
+        pimage = models.simages.objects.filter(sid_id=sid).delete()
+        pstrate = models.strategy.objects.filter(id=sid).delete()
         return JsonResponse({"code": "200"})
     except Exception as ex:
         print(ex)
         return JsonResponse({"code": "500"})
-
-

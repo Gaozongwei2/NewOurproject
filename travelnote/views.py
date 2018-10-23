@@ -4,6 +4,11 @@ import json
 from . import models
 import time
 from datetime import datetime
+
+# 查询用户游记数量
+def tnum(userid):
+    num = models.travelnote.objects.filter(userid_id=userid).count()
+    return num
 # 查询方法
 def gettravelnote(res):
     tposts = models.travelnote.objects.filter(title__icontains=res).values()
@@ -47,3 +52,14 @@ def gettravelnotedetail(request,id):
 # 普通搜索功能
 def searchbysome(request):
     pass
+
+
+# 用户查询自己的游记数量
+def searchcount(request,userid):
+    try:
+        travelnote = models.travelnote.objects.filter(userid_id=userid).values().count()
+        print(travelnote)
+        return HttpResponse(travelnote)
+    except Exception as ex:
+        print(ex)
+        return JsonResponse({"code":"500"})

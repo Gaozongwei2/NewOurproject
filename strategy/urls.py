@@ -23,7 +23,7 @@ urlpatterns = [
 #     详情展示
     url(r'showdetail/(?P<postid>\d+)/$', views.showdetail, name="showdetail"),
     # 地点 用户名 title
-    url(r'searchbysome/(?P<stype>\w+)/(?P<scondition>\w+)/$', views.searchbysome, name="searchbysome"),
+    url(r'searchbysome/(?P<index>\w+)/(?P<scondition>\w+)/$', views.searchbysome, name="searchbysome"),
 
     # 新建攻略
     url(r'add/', views.add, name="add"),
