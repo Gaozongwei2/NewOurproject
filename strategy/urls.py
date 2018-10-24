@@ -31,4 +31,7 @@ urlpatterns = [
     url(r'update/(?P<postid>\d+)/$', views.update, name="update"),
     #  删除攻略
     url(r'delete/', views.delete, name="delete"),
+# 2018.10.24
+    url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
+
 ]

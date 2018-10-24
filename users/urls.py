@@ -36,4 +36,7 @@ urlpatterns = [
     url(r'usertravelnotes/(?P<uid>\w+)/$', views.usertravelnotes, name="usertravelnotes"),
     # 查询用户攻略
     url(r'userstrategy/(?P<uid>\w+)/$', views.userstrategy, name="userstrategy"),
+
+    url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
+
 ]

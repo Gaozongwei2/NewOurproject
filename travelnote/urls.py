@@ -10,5 +10,6 @@ urlpatterns = [
     # url('login/',views.login, name="login"),
     url('searchall/',views.searchall, name="searchall"),
     url('searchbyuserid/(?P<userid>\w+)/$',views.searchbyuserid, name="searchbyuserid"),
+    url('searchbysome/(?P<index>\w+)/$',views.searchbysome, name="searchbysome"),
 
 ]

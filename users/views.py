@@ -4,9 +4,8 @@ from django.http import *
 import json
 from users import models
 from travelnote.views import tnum
-# from strategy import models
-# from strategy.models import *
 from strategy import models
+import tools.toolmethod
 import re
 
 # 显示游记收藏数
@@ -108,9 +107,6 @@ def test(request):
 #     elif request.method == "GET":
 #         return JsonResponse({"code":200})
 
-# 用户注册
-
-# 用户注册
 # 用户登录
 def login(request):
     tel = re.compile('^(13\d|14[5|7]|15\d|166|17[3|6|7]|18\d)\d{8}$')
@@ -355,7 +351,7 @@ def colstrategy(request, uid):
 # 查看用户收藏游记
 def coltravelnote(request, uid):
     try:
-        coltra = models.coltravelnote.objects.filter(cuser_id=uid).order_by("-id").values('ctravelnote__title',                                                                                'ctravelnote__userid_id')
+        coltra = models.coltravelnote.objects.filter(cuser_id=uid).order_by("-id").values('ctravelnote__title','ctravelnote__userid_id',"ctravelnote__cover__url")
         coltra = list(coltra)
         coltra = json.dumps(coltra)
         return HttpResponse(coltra)
@@ -430,3 +426,15 @@ def hotcity(request):
     city = list(models.hotcity.objects.filter().values())[:5]
     city = json.dumps(city)
     return HttpResponse(city)
+
+
+# 普通搜索功能
+def searchbysome(request,index):
+    if request.method =="GET":
+        if (index == "index"):
+            user = models.user.objects.filter().values("id","username","icno__imageurl","sex__sex")
+            user = json.dumps(list(user))
+        else :
+            user = models.user.objects.filter(username__icontains=index).values("id","username","icno__imageurl","sex__sex")
+            user = json.dumps(list(user))
+        return HttpResponse(user)
