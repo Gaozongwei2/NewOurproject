@@ -15,5 +15,6 @@ urlpatterns = [
 
     # 查询游记的评论
     url(r'tcommit/(?P<userid>\w+)/$', views.tcommit, name="tcommit"),
+    url('searchbysome/(?P<index>\w+)/$',views.searchbysome, name="searchbysome"),
 
 ]

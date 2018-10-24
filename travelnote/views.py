@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse, request
 import json
 from . import models
+import tools.toolmethod
 import time
 from datetime import datetime
 import  tools.toolmethod as time
@@ -16,7 +17,6 @@ def gettravelnote(res):
     return tposts
 # 查询所有的游记``
 def searchall(request):
-
     try:
         travelnotes = models.travelnote.objects.filter().values("id","title","good","view","state","cover__url","userid__icno__imageurl","userid__username")
         travelnotes = list(travelnotes)
@@ -47,11 +47,16 @@ def gettravelnotedetail(request,id):
             item["time"] = item["time"].strftime("%Y-%m-%d")
         return HttpResponse(json.dumps(detail))
 
-
-
 # 普通搜索功能
-def searchbysome(request):
-    pass
+def searchbysome(request,index):
+    if request.method =="GET":
+        if (index == "index"):
+            tport = models.travelnote.objects.filter(condition_id=2).values("id","title","time","cover__url","content","view","userid__icno__imageurl","userid__username")
+            tport = tools.toolmethod.changestyle(tport)
+        else :
+            tport = models.travelnote.objects.filter(title__icontains=index ,condition_id=2).values("id","title","time","cover__url","content","view","userid__icno__imageurl","userid__username")
+            tport = tools.toolmethod.changestyle(tport)
+        return HttpResponse(tport)
 
 
 # 用户查询自己的游记数量

@@ -10,6 +10,8 @@ from django.http import *
 import json
 from . import models
 import  tools.toolmethod as time
+import tools.toolmethod
+
 
 # from travelnote.models import *
 def insertdetail(request):
@@ -143,43 +145,7 @@ def timechangeu(contents):
     return contents
 
 
-# 根据条件搜索 卡片展示所有攻略
-def searchbysome(request, index, scondition):
-    if request.method == "GET":
-        print("this is get")
-        if (index == "all"):
-            # 攻略数据
-            if (scondition == "index"):
-                sposts = models.strategy.objects.filter( condition_id="2").values("id", "title","state","time","good","view","userid_id","userid__username","userid__icno__imageurl")
-                sposts = timechange(sposts)
-                # 游记数据
-                tpost = models.travelnote.objects.filter( condition_id="2").values("title","state","time", "good","view","userid_id", "userid__username", "userid__icno__imageurl")
-                print(tpost)
-                tpost = timechange(tpost)
-                # 用户数据
-                users = models.user.objects.filter().values("id", "username", "icno__imageurl")
-                users = json.dumps(list(users))
-                result = [
-                    sposts, tpost, users
-                ]
-            else:
-                scondition = scondition[:-5]
-                sposts = models.strategy.objects.filter(title__icontains=scondition, condition_id="2").values("id","title","state","time","good", "view","userid_id", "userid__username", "userid__icno__imageurl")
-                sposts = timechange(sposts)
-                # 游记数据
-                tpost = models.travelnote.objects.filter(title__icontains=scondition, condition_id="2").values("title", "state","time", "good", "view", "userid_id","userid__username", "userid__icno__imageurl")
-                print(tpost)
-                tpost = timechange(tpost)
-                # 用户数据
-                users = models.user.objects.filter().values("id", "username","icno__imageurl")
-                users = json.dumps(list(users))
-                result = [
-                    {sposts},
-                    {tpost},
-                    {users}
-                ]
 
-        return HttpResponse(json.dumps(result))
 
 
 # 用户查询自己的攻略(卡片)
@@ -333,3 +299,15 @@ def scommit(request,userid):
 
 
 
+
+# 2018.10.24
+# 普通搜索功能
+def searchbysome(request,index):
+    if request.method =="GET":
+        if (index == "index"):
+            tport = models.strategy.objects.filter(condition_id=2).values("id","title","time","scover__url","content","view","userid__icno__imageurl","userid__username")
+            tport = tools.toolmethod.changestyle(tport)
+        else :
+            tport = models.strategy.objects.filter(title__icontains=index ,condition_id=2).values("id","title","time","scover__url","content","view","userid__icno__imageurl","userid__username")
+            tport = tools.toolmethod.changestyle(tport)
+        return HttpResponse(tport)

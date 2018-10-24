@@ -35,4 +35,7 @@ urlpatterns = [
     # 查询攻略的评论
     url(r'scommit/(?P<userid>\w+)/$', views.scommit, name="scommit"),
 
+# 2018.10.24
+    url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
+
 ]
