@@ -4,7 +4,7 @@ import json
 from . import models
 import time
 from datetime import datetime
-
+import  tools.toolmethod as time
 # 查询用户游记数量
 def tnum(userid):
     num = models.travelnote.objects.filter(userid_id=userid).count()
@@ -63,3 +63,35 @@ def searchcount(request,userid):
     except Exception as ex:
         print(ex)
         return JsonResponse({"code":"500"})
+
+# 根据游记查询用户去过哪些地方
+def gonecity(request, userid):
+
+        city = models.travelnote.objects.filter(userid_id=userid).values('state')
+        # city2 = models.travelnote.objects.filter(userid_id=userid).values('state')
+        # city = list(city)
+        # city = json.dumps(city)
+        # setcity = set(city)
+        li =[]
+        for item in city:
+            if item['state'] in li:
+                pass
+            else:
+                li.append(item['state'])
+
+        # 随机分配图片
+        img = models.travelnote.objects.filter(userid_id=userid).values('cover__url')[:len(li)]
+        img = list(img)
+        for i in range(len(li)):
+            img[i]["city"] = li[i]
+        return HttpResponse(json.dumps(img))
+
+# 查询用户游记的评论
+def tcommit(request,userid):
+
+    tcommit = models.tcommit.objects.filter(userid_id=userid).values('tid_id','commit','time','tid__cover__url','tid__title')
+    tcommit =list(tcommit)
+    tcommit = time.changestyleC(tcommit)
+    return HttpResponse(tcommit)
+
+

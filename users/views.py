@@ -338,7 +338,7 @@ def unfocus(request, uid, uid_id):
 # 查询用户收藏攻略
 def colstrategy(request, uid):
     try:
-        colstr = models.colstrategy.objects.filter(cuser_id=uid).order_by("-id").values('cstrategy__title',                                                                              'cstrategy__content')
+        colstr = models.colstrategy.objects.filter(cuser_id=uid).order_by("-id").values('cstrategy__title', 'cstrategy__content')
         colstr = list(colstr)
         colstr = json.dumps(colstr)
         # for i in range(len(colstr)):
@@ -355,7 +355,7 @@ def colstrategy(request, uid):
 # 查看用户收藏游记
 def coltravelnote(request, uid):
     try:
-        coltra = models.coltravelnote.objects.filter(cuser_id=uid).order_by("-id").values('ctravelnote__title',                                                                                'ctravelnote__userid_id')
+        coltra = models.coltravelnote.objects.filter(cuser_id=uid).order_by("-id").values('ctravelnote__title', 'ctravelnote__userid_id')
         coltra = list(coltra)
         coltra = json.dumps(coltra)
         return HttpResponse(coltra)
@@ -422,11 +422,10 @@ def updatemark(request, uid, mark):
         print(ex)
         return JsonResponse({"code": "505"})
 
-
-
 # 2018.10.24
 # 查询热门城市
 def hotcity(request):
     city = list(models.hotcity.objects.filter().values())[:5]
     city = json.dumps(city)
     return HttpResponse(city)
+

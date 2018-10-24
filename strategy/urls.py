@@ -31,4 +31,8 @@ urlpatterns = [
     url(r'update/(?P<postid>\d+)/$', views.update, name="update"),
     #  删除攻略
     url(r'delete/', views.delete, name="delete"),
+
+    # 查询攻略的评论
+    url(r'scommit/(?P<userid>\w+)/$', views.scommit, name="scommit"),
+
 ]

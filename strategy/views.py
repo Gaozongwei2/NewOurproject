@@ -9,7 +9,7 @@ from users.views import updatemark
 from django.http import *
 import json
 from . import models
-
+import  tools.toolmethod as time
 
 # from travelnote.models import *
 def insertdetail(request):
@@ -104,9 +104,7 @@ def insertdetail(request):
 # 卡片展示所有攻略
 def showall(request):
     try:
-        allstrategy = models.strategy.objects.filter().values('id', "title", 'time', "scover__url",
-                                                              "condition__condition", "good", "view", "state",
-                                                              "userid_id", "userid__username", "userid__icno__imageurl")
+        allstrategy = models.strategy.objects.filter().values('id', "title", 'time', "scover__url","condition__condition", "good", "view", "state","userid_id", "userid__username", "userid__icno__imageurl")
         listallstrategy = timechange(allstrategy)
         print(listallstrategy)
         return HttpResponse(listallstrategy)
@@ -152,60 +150,28 @@ def searchbysome(request, index, scondition):
         if (index == "all"):
             # 攻略数据
             if (scondition == "index"):
-                sposts = models.strategy.objects.filter( condition_id="2").values("id",
-                                                                                                              "title",
-                                                                                                              "state",
-                                                                                                              "time",
-                                                                                                              "good",
-                                                                                                              "view",
-                                                                                                              "userid_id",
-                                                                                                              "userid__username",
-                                                                                                              "userid__icno__imageurl")
+                sposts = models.strategy.objects.filter( condition_id="2").values("id", "title","state","time","good","view","userid_id","userid__username","userid__icno__imageurl")
                 sposts = timechange(sposts)
                 # 游记数据
-                tpost = models.travelnote.objects.filter( condition_id="2").values("title",
-                                                                                                               "state",
-                                                                                                               "time",
-                                                                                                               "good",
-                                                                                                               "view",
-                                                                                                               "userid_id",
-                                                                                                               "userid__username",
-                                                                                                               "userid__icno__imageurl")
+                tpost = models.travelnote.objects.filter( condition_id="2").values("title","state","time", "good","view","userid_id", "userid__username", "userid__icno__imageurl")
                 print(tpost)
                 tpost = timechange(tpost)
                 # 用户数据
-                users = models.user.objects.filter().values("id", "username",
-                                                                                          "icno__imageurl")
+                users = models.user.objects.filter().values("id", "username", "icno__imageurl")
                 users = json.dumps(list(users))
                 result = [
                     sposts, tpost, users
                 ]
             else:
                 scondition = scondition[:-5]
-                sposts = models.strategy.objects.filter(title__icontains=scondition, condition_id="2").values("id",
-                                                                                                              "title",
-                                                                                                              "state",
-                                                                                                              "time",
-                                                                                                              "good",
-                                                                                                              "view",
-                                                                                                              "userid_id",
-                                                                                                              "userid__username",
-                                                                                                              "userid__icno__imageurl")
+                sposts = models.strategy.objects.filter(title__icontains=scondition, condition_id="2").values("id","title","state","time","good", "view","userid_id", "userid__username", "userid__icno__imageurl")
                 sposts = timechange(sposts)
                 # 游记数据
-                tpost = models.travelnote.objects.filter(title__icontains=scondition, condition_id="2").values("title",
-                                                                                                               "state",
-                                                                                                               "time",
-                                                                                                               "good",
-                                                                                                               "view",
-                                                                                                               "userid_id",
-                                                                                                               "userid__username",
-                                                                                                               "userid__icno__imageurl")
+                tpost = models.travelnote.objects.filter(title__icontains=scondition, condition_id="2").values("title", "state","time", "good", "view", "userid_id","userid__username", "userid__icno__imageurl")
                 print(tpost)
                 tpost = timechange(tpost)
                 # 用户数据
-                users = models.user.objects.filter().values("id", "username",
-                                                                                          "icno__imageurl")
+                users = models.user.objects.filter().values("id", "username","icno__imageurl")
                 users = json.dumps(list(users))
                 result = [
                     {sposts},
@@ -221,11 +187,7 @@ def searchbyuserid(request):
     if request.method == "GET":
         try:
             uid = request.GET.get('userid')
-            strategy = models.strategy.objects.filter(userid=uid).values('scover__url', 'condition__strategy__title',
-                                                                         'condition__strategy__good',
-                                                                         'condition__strategy__view',
-                                                                         'condition__strategy__userid',
-                                                                         'condition__strategy__userid')
+            strategy = models.strategy.objects.filter(userid=uid).values('scover__url', 'condition__strategy__title', 'condition__strategy__good','condition__strategy__view', 'condition__strategy__userid','condition__strategy__userid')
             strategy = list(strategy)
             strategy = json.dumps(strategy)
             return HttpResponse(strategy)
@@ -339,8 +301,7 @@ def update(request, postid):
             #     }
             # }
 
-            affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"],
-                                                                           state=newdate["state"],                                                             condition_id=newdate["condition_id"])
+            affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"], state=newdate["state"],condition_id=newdate["condition_id"])
             affect_rowsurl = models.scover.objects.filter(id=postid).update(url=newdate["cover"])
             affect_rowsimg = models.simages.objects.filter(id=postid).update(url=newdate["img"]["img1"])
         return JsonResponse({"code": "200"})
@@ -362,3 +323,13 @@ def delete(request):
     except Exception as ex:
         print(ex)
         return JsonResponse({"code": "500"})
+
+# 获取用户的攻略评论
+def scommit(request,userid):
+    scommit = models.scommit.objects.filter(userid_id=userid).values('sid_id','commit','time','sid__scover__url')
+    scommit =list(scommit)
+    scommit = time.changestyleC(scommit)
+    return HttpResponse(scommit)
+
+
+

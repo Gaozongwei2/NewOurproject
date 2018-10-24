@@ -10,5 +10,10 @@ urlpatterns = [
     # url('login/',views.login, name="login"),
     url('searchall/',views.searchall, name="searchall"),
     url('searchbyuserid/(?P<userid>\w+)/$',views.searchbyuserid, name="searchbyuserid"),
+    # 根据游记查看用户去过哪些地方
+    url(r'gonecity/(?P<userid>\w+)/$', views.gonecity, name="gonecity"),
+
+    # 查询游记的评论
+    url(r'tcommit/(?P<userid>\w+)/$', views.tcommit, name="tcommit"),
 
 ]
