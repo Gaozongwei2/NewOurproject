@@ -39,4 +39,6 @@ urlpatterns = [
 
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
+    # 推荐地点
+    url('searcharea/(?P<city>\w+)/$', views.searcharea, name="searcharea"),
 ]

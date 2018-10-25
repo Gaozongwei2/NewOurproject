@@ -438,3 +438,34 @@ def searchbysome(request,index):
             user = models.user.objects.filter(username__icontains=index).values("id","username","icno__imageurl","sex__sex")
             user = json.dumps(list(user))
         return HttpResponse(user)
+
+
+# 查询地区
+
+
+# 有大坑，因为取出的字段名称不一定是谁，所以应该手动同意字段名
+def searcharea(request,city):
+    if request.method =="GET":
+        res = []
+        result = "没有数据"
+        province = list(models.province.objects.filter(province__icontains=city).values("provinceID", "province"))
+        if len(province):
+            result = province
+            for i in result:
+                i["areaID"] = i.pop("provinceID")
+                i["area"] = i.pop("province")
+                res.append(i)
+        else:
+            city1 = list(models.city.objects.filter(city__icontains=city).values("cityID", "city"))
+            if len(city1):
+                result = city1
+                for i in result:
+                    i["areaID"] = i.pop("cityID")
+                    i["area"] = i.pop("city")
+                    res.append(i)
+            else:
+                area = list(models.area.objects.filter(area__icontains=city).values("areaID", "area"))
+                if len(area):
+                        res = area
+        result = json.dumps(res)
+        return HttpResponse(result)

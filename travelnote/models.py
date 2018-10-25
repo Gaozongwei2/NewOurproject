@@ -13,8 +13,8 @@ class condition(models.Model):
 class travelnote(models.Model):
     title = models.CharField(max_length=100)
     time = models.DateTimeField(max_length=20)
-    good = models.IntegerField()
-    view = models.IntegerField(null=False)
+    good = models.IntegerField(default=0)
+    view = models.IntegerField(default=0)
     state = models.CharField(max_length=200)
     content = models.TextField(default="聪明人才能看见的简介")
     file1 = models.CharField(max_length=200, null=True)
@@ -31,7 +31,7 @@ class timages(models.Model):
 # 内容
 class tcontent(models.Model):
     contentt = models.TextField(default='not have message')
-    tid = models.ForeignKey(to='travelnote', to_field='id', on_delete=models.CASCADE)
+    # tid = models.IntegerField(null=False, default=1)
 
 # 游记收藏
 class tcollection(models.Model):
@@ -45,3 +45,6 @@ class tcommit(models.Model):
     userid = models.ForeignKey(to='users.user',to_field='id',on_delete=models.CASCADE,default=1)
     field01 = models.CharField(max_length=200, null= True)
     field02 = models.CharField(max_length=200, null= True)
+
+
+

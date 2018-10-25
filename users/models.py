@@ -65,3 +65,21 @@ class hotviewpoint(models.Model):
     file1 = models.IntegerField(max_length=10, null=True)
     file2 = models.CharField(max_length=50, null=True)
 
+# 新建省表
+class province(models.Model):
+    provinceID = models.CharField(max_length=10)
+    province = models.CharField(max_length=40)
+
+
+# 新建市表
+class city(models.Model):
+    cityID = models.CharField(max_length=10)
+    city = models.CharField(max_length=50)
+    father = models.CharField(max_length=10)
+    # father = models.ForeignKey(unique= True ,to='province', to_field='provinceID', on_delete=models.CASCADE)
+
+# 新建地区表
+class area(models.Model):
+    areaID = models.CharField(max_length=50)
+    area = models.CharField(max_length=60)
+    father = models.CharField(max_length=10)

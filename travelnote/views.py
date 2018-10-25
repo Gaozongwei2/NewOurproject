@@ -68,3 +68,22 @@ def searchcount(request,userid):
     except Exception as ex:
         print(ex)
         return JsonResponse({"code":"500"})
+
+# 2018.10.24
+# 保存游记内容
+def savecontent(request):
+    if request.method=="POST":
+        ncontent = request.POST.get("content")
+        print(ncontent)
+        nncontent = models.tcontent.objects.create(contentt=ncontent)
+        print(nncontent.id)
+        return HttpResponse(nncontent.id)
+    else:
+        return HttpResponse("这里是请求")
+
+
+# 取出游记内容
+def getcontent(request,id):
+    if request.method == "GET":
+        content = json.dumps(list(models.tcontent.objects.filter(id=id).values("contentt"))[0])
+        return HttpResponse(content)

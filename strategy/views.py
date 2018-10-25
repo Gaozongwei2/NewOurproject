@@ -306,3 +306,5 @@ def searchbysome(request,index):
             tport = models.strategy.objects.filter(title__icontains=index ,condition_id=2).values("id","title","time","scover__url","content","view","userid__icno__imageurl","userid__username")
             tport = tools.toolmethod.changestyle(tport)
         return HttpResponse(tport)
+
+
