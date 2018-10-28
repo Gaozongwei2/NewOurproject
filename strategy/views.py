@@ -196,7 +196,6 @@ def showdetail(request, postid):
     elif request.method == "GET":
         return JsonResponse({"code": "505"})
 
-
 # 新建攻略
 def add(request):
     try:
@@ -301,10 +300,83 @@ def searchbysome(request,index):
     if request.method =="GET":
         if (index == "index"):
             tport = models.strategy.objects.filter(condition_id=2).values("id","title","time","scover__url","content","view","userid__icno__imageurl","userid__username")
-            tport = tools.toolmethod.changestyle(tport)
         else :
             tport = models.strategy.objects.filter(title__icontains=index ,condition_id=2).values("id","title","time","scover__url","content","view","userid__icno__imageurl","userid__username")
-            tport = tools.toolmethod.changestyle(tport)
+            if len(list(tport))==0:
+                tport = models.strategy.objects.filter(state__icontains=index, condition_id=2).values("id", "title", "time","scover__url","content", "view","userid__icno__imageurl","userid__username")
+            if len(list(tport)) == 0:
+                tport = models.strategy.objects.filter(content__icontains=index,condition_id=2).values("id", "title", "time","scover__url","content", "view","userid__icno__imageurl","userid__username")
+        tport = tools.toolmethod.changestyle(tport)
         return HttpResponse(tport)
 
+# 根据postid更新攻略信息
+def update(request,postid):
+    try:
+        if request.method =="POST":
+            newdate = json.loads(request.body)
 
+            # newdata = {
+            #     "title":"newdate",
+            #     "state":"hhhh",
+            #     "condition_id":2,
+            # #     封面
+            #     "cover":"oooo",
+            # #     图片
+            #     "img":{
+            #         "img1":"11111",
+            #         "img2":"22222"
+            #     }
+            # }
+
+            affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"],state=newdate["state"],condition_id=newdate["condition_id"])
+            affect_rowsurl = models.scover.objects.filter(id=postid).update(url=newdate["cover"])
+            affect_rowsimg = models.simages.objects.filter(id=postid).update(url=newdate["img"]["img1"])
+        return JsonResponse({"code": "200"})
+    except Exception as ex:
+        print(ex)
+    return JsonResponse({"code": "500"})
+
+# 删除攻略
+def delete(request):
+    try:
+        sid = request.GET.get('sid_id')
+        pcontent = models.sccontent.objects.filter(sid_id = sid).delete()
+        pcommit = models.scommit.objects.filter(sid_id = sid).delete()
+        pcover = models.scover.objects.filter(sid_id = sid).delete()
+        pimage = models.simages.objects.filter(sid_id = sid).delete()
+        pstrate = models.strategy.objects.filter(id = sid).delete()
+        return JsonResponse({"code": "200"})
+    except Exception as ex:
+        print(ex)
+        return JsonResponse({"code": "500"})
+
+# 2018.10.27
+# 保存攻略内容
+def addcontent(request):
+    try:
+        if request.method == "POST":
+            title = request.POST.get("title")
+            print("haha")
+            print(title)
+            # contents = request.POST.get("ccontent")
+            # address = request.POST.get("address")
+            # play = request.POST.get("play")
+            # playphoto = request.POST.get("playphoto")
+            # traffic = request.POST.get("traffic")
+            # ticket = request.POST.get("ticket")
+            # food = request.POST.get("food")
+            # foodphoto = request.POST.get("foodphoto")
+            # sid = request.path.get("sid")
+
+            # content = models.scontent.objects.create(
+            #     contents=contents,address=address,play=play, playphoto=playphoto, traffic=traffic,
+            #     ticket=ticket,food=food,foodphoto=foodphoto,sid_id=sid
+            # )
+            # print(content)
+
+
+        else:
+            return HttpResponse("添加内容")
+
+    except Exception as ex:
+        print(ex)

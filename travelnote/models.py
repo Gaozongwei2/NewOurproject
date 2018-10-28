@@ -9,29 +9,28 @@ class tcover(models.Model):
 class condition(models.Model):
     condition = models.CharField(max_length=20)
 
+# 内容
+class tcontent(models.Model):
+    contentt = models.TextField(default='not have message')
 # 游记
 class travelnote(models.Model):
-    title = models.CharField(max_length=100)
-    time = models.DateTimeField(max_length=20)
+    title = models.CharField(max_length=100, default="聪明人才能看见的title")
+    time = models.DateTimeField(max_length=20, default="1997-6-2")
     good = models.IntegerField(default=0)
     view = models.IntegerField(default=0)
-    state = models.CharField(max_length=200)
+    state = models.CharField(max_length=200,default="北京")
     content = models.TextField(default="聪明人才能看见的简介")
     file1 = models.CharField(max_length=200, null=True)
     file2 = models.CharField(max_length=200, null=True)
     userid = models.ForeignKey(to="users.user",to_field="id",on_delete= models.CASCADE,default=1)
     condition = models.ForeignKey(to='condition',to_field='id', on_delete=models.CASCADE,default=1)
     cover = models.ForeignKey(to='tcover',to_field='id',on_delete=models.CASCADE,default=1)
+    contentall = models.ForeignKey(to='tcontent',to_field='id',on_delete=models.CASCADE,default=1)
+
 # 图片
 class timages(models.Model):
     url = models.TextField()
     timages = models.ForeignKey(to='travelnote', to_field='id',on_delete=models.CASCADE)
-
-
-# 内容
-class tcontent(models.Model):
-    contentt = models.TextField(default='not have message')
-    # tid = models.IntegerField(null=False, default=1)
 
 # 游记收藏
 class tcollection(models.Model):

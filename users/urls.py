@@ -25,6 +25,9 @@ urlpatterns = [
     url(r'focus/(?P<uid>\w+)/$', views.focus, name="focus"),
     # 取消用户关注
     url(r'unfocus/(?P<uid>\w+)/(?P<uid_id>\w+)/$', views.unfocus, name="unfocus"),
+    # 关注用户
+    url(r'newfocus/(?P<uid>\w+)/(?P<uid_id>\w+)/$', views.unfocus, name="unfocus"),
+
     # 查询用户收藏攻略
     url(r'colstrategy/(?P<uid>\w+)/$', views.colstrategy, name="colstrategy"),
     # 查看用户收藏游记
@@ -36,9 +39,15 @@ urlpatterns = [
     url(r'usertravelnotes/(?P<uid>\w+)/$', views.usertravelnotes, name="usertravelnotes"),
     # 查询用户攻略
     url(r'userstrategy/(?P<uid>\w+)/$', views.userstrategy, name="userstrategy"),
-
+    #简单查询
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
     # 推荐地点
     url('searcharea/(?P<city>\w+)/$', views.searcharea, name="searcharea"),
+
+    # 更新积分
+    url('updatemark/(?P<uid>\w+)/(?P<marks>\w+)/$', views.updatemark, name="updatemark"),
+
+
+
 ]

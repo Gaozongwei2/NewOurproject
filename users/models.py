@@ -61,7 +61,7 @@ class hotcity(models.Model):
 # 热门景点
 class hotviewpoint(models.Model):
     viewpoint = models.CharField(max_length=50,null=True)
-    cityid = models.CharField(max_length=50,null=True)
+    area = models.CharField(max_length=50,null=True)
     file1 = models.IntegerField(max_length=10, null=True)
     file2 = models.CharField(max_length=50, null=True)
 

@@ -13,5 +13,14 @@ urlpatterns = [
     url('searchbysome/(?P<index>\w+)/$',views.searchbysome, name="searchbysome"),
     url('savecontent/',views.savecontent, name="savecontent"),
     url('getcontent/(?P<id>\w+)/$',views.getcontent, name="getcontent"),
+    url('savetravelnote/',views.savetravelnote, name="savetravelnote"),
+
+    url('storagereview/(?P<tid>\w+)/(?P<uid>\w+)/$', views.storagereview, name="storagereview"),
+    # 更新浏览数量
+    url('updatelooknum/(?P<tid>\w+)/$', views.updatelooknum, name="updatelooknum"),
+    # 查询用户评论
+    url('searchreview/(?P<tid>\w+)/$', views.searchreview, name="searchreview"),
+    # 查询文章是否被收藏过
+    url('searchcollect/(?P<cid>\w+)/', views.searchcollect, name="searchcollect")
 
 ]

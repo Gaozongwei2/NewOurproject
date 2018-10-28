@@ -221,7 +221,7 @@ def myfocusnum(request,id):
 def usertravelnotes(request,uid):
     try:
         # 时间 标题 点赞数 浏览量  封皮
-        utrav = models.travelnote.objects.filter(userid_id = uid).values('title','time','good','view','cover__url','content')
+        utrav = models.travelnote.objects.filter(userid_id = uid).values( 'id','title','time','good','view','cover__url','content')
         utrav = list(utrav)[:5]
         for item in utrav:
             item["time"] = item["time"].strftime("%Y-%m-%d")
@@ -405,14 +405,14 @@ def usermark(request, uid):
         return JsonResponse({"code": "505"})
 
 # 更新用户积分
-def updatemark(request, uid, mark):
+def updatemark(request, uid, marks):
     try:
         # 查询用户现在的积分
         nomark = models.user.objects.filter(id=uid).values('mark')
         nomark = list(nomark)
         nomark = nomark[0]["mark"]
         # 更新
-        udnark = models.user.objects.filter(id=uid).update(mark=int(nomark) + int(mark))
+        udnark = models.user.objects.filter(id=uid).update(mark=int(nomark) + int(marks))
         return JsonResponse({"code": "200"})
     except Exception as ex:
         print(ex)
@@ -436,6 +436,8 @@ def searchbysome(request,index):
             user = json.dumps(list(user))
         else :
             user = models.user.objects.filter(username__icontains=index).values("id","username","icno__imageurl","sex__sex")
+            if len(list(user)):
+                user = models.user.objects.filter(state__icontains=index).values("id","username","icno__imageurl","sex__sex")
             user = json.dumps(list(user))
         return HttpResponse(user)
 

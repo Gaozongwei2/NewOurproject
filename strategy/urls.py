@@ -34,4 +34,6 @@ urlpatterns = [
 # 2018.10.24
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
+    url('addcontent/', views.addcontent, name="addcontent"),
+
 ]
