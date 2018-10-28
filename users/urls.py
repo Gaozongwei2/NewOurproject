@@ -39,5 +39,10 @@ urlpatterns = [
 
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
+# 查看所有的积分和称号
+    url('usermark/', views.usermark, name="usermark"),
+
+    # 查询当前用户积分
+    url('mark/(?P<uid>\w+)/$', views.mark, name="mark"),
 
 ]

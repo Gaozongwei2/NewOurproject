@@ -266,7 +266,6 @@ def update(request, postid):
             #         "img2":"22222"
             #     }
             # }
-
             affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"], state=newdate["state"],condition_id=newdate["condition_id"])
             affect_rowsurl = models.scover.objects.filter(id=postid).update(url=newdate["cover"])
             affect_rowsimg = models.simages.objects.filter(id=postid).update(url=newdate["img"]["img1"])
@@ -297,9 +296,6 @@ def scommit(request,userid):
     scommit = time.changestyleC(scommit)
     return HttpResponse(scommit)
 
-
-
-
 # 2018.10.24
 # 普通搜索功能
 def searchbysome(request,index):
@@ -311,3 +307,27 @@ def searchbysome(request,index):
             tport = models.strategy.objects.filter(title__icontains=index ,condition_id=2).values("id","title","time","scover__url","content","view","userid__icno__imageurl","userid__username")
             tport = tools.toolmethod.changestyle(tport)
         return HttpResponse(tport)
+
+
+# 查询用户是否已经点赞过某个攻略,以及当前攻略的被点赞数
+def hasgood(request, sid, userid):
+    goodcount = models.strategy.objects.filter(id=sid, userid_id=userid).values('file1', 'good')
+    goodcount = list(goodcount)
+    if goodcount[0]["file1"] == '0':
+        goodcount[0]["file1"] = '点赞'
+    else:
+        goodcount[0]["file1"] = '已点赞'
+
+    return JsonResponse({"data": goodcount})
+
+# 更新用户的点赞状态
+def updategood(request, sid, userid):
+    if request.method == "POST":
+        # print(111)
+        goods = request.POST.get("good")
+        print(goods)
+        updatecount = models.strategy.objects.filter(id=sid, userid_id=userid).update(good=goods, file1=1)
+        return HttpResponse(goods)
+    else:
+        return HttpResponse("这里是请求")
+

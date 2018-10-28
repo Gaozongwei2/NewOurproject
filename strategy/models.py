@@ -9,7 +9,7 @@ class condition(models.Model):
 # 攻略封面
 class scover(models.Model):
     url = models.TextField()
-    # sid = models.ForeignKey(to='strategy', to_field='id', on_delete = models.CASCADE)
+    # sid = models.ForeignKey(to='strategy', to_field='id', on_delete = models.CASCADE,default=1)
     file1 = models.CharField(max_length=50, null=True)
     file2 = models.CharField(max_length=50, null=True)
 
@@ -39,6 +39,23 @@ class simages(models.Model):
 # 攻略内容
 class sccontent(models.Model):
     contents = models.TextField(default='not have message')
+    # 优点
+    advantage = models.TextField()
+    # 地点
+    address = models.TextField()
+    # 游玩攻略
+    play = models.TextField()
+    # 游玩图片
+    playphoto = models.TextField()
+    # 交通攻略
+    traffic = models.TextField()
+    # 门票攻略
+    ticket = models.TextField()
+    # 餐饮攻略
+    food = models.TextField()
+    # 餐饮图片
+    foodphoto = models.TextField()
+    # 对应攻略的外键
     sid = models.ForeignKey(to='strategy', to_field='id', on_delete=models.CASCADE)
     file1 = models.CharField(max_length=50, null=True)
     file2 = models.CharField(max_length=50, null=True)

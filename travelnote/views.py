@@ -99,4 +99,51 @@ def tcommit(request,userid):
     tcommit = time.changestyleC(tcommit)
     return HttpResponse(tcommit)
 
+# 查询用户是否已经点赞过某个游记,以及当前游记的被点赞数
+def hasgood(request,tid,userid):
+    goodcount = models.travelnote.objects.filter(id=tid,userid_id=userid).values('file1','good')
+    goodcount = list(goodcount)
+    # goodcount = json.dumps(goodcount)
+
+    if goodcount[0]["file1"]=='0':
+        goodcount[0]["file1"]='点赞'
+    else:
+        goodcount[0]["file1"] = '已点赞'
+
+    return JsonResponse({"data":goodcount})
+
+
+# 更新用户的点赞状态
+def updategood(request,tid,userid):
+    if request.method == "POST":
+        goods = request.POST.get("good")
+        updatecount = models.travelnote.objects.filter(id=tid,userid_id=userid).update(good=goods,file1=1)
+        return HttpResponse(goods)
+    else:
+        return HttpResponse("这里是请求")
+
+# 根据游记id显示里面具体的内容
+def detailcontent(request,tid):
+    detailcontent =  models.tcontent.objects.filter(id=tid,userid_id=userid).update(good=goods,file1=1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
