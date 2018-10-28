@@ -9,11 +9,10 @@ class condition(models.Model):
 # 攻略封面
 class scover(models.Model):
     url = models.TextField()
-    # sid = models.ForeignKey(to='strategy', to_field='id', on_delete = models.CASCADE,default=1)
     file1 = models.CharField(max_length=50, null=True)
     file2 = models.CharField(max_length=50, null=True)
 
-# # 攻略
+# 攻略
 class strategy(models.Model):
     title = models.CharField(max_length=200)
     state = models.CharField(max_length=100)
@@ -27,17 +26,8 @@ class strategy(models.Model):
     scover = models.ForeignKey(to='scover',to_field='id', on_delete=models.CASCADE,default=1)
     file1 = models.CharField(max_length=100, null=True)
     file2 = models.CharField(max_length=100, null=True)
-
-
-# 攻略图片
-class simages(models.Model):
-    url = models.TextField()
-    sid = models.ForeignKey(to='strategy', to_field='id', on_delete=models.CASCADE)
-    file1 = models.CharField(max_length=50, null=True)
-    file2 = models.CharField(max_length=50, null=True)
-
 # 攻略内容
-class sccontent(models.Model):
+class scontent(models.Model):
     contents = models.TextField(default='not have message')
     # 优点
     advantage = models.TextField()
@@ -56,9 +46,18 @@ class sccontent(models.Model):
     # 餐饮图片
     foodphoto = models.TextField()
     # 对应攻略的外键
+    sid = models.ForeignKey(to='strategy', to_field='id', on_delete=models.CASCADE,default=1)
+    file1 = models.CharField(max_length=50, null=True)
+    file2 = models.CharField(max_length=50, null=True)
+
+# 攻略图片
+class simages(models.Model):
+    url = models.TextField()
     sid = models.ForeignKey(to='strategy', to_field='id', on_delete=models.CASCADE)
     file1 = models.CharField(max_length=50, null=True)
     file2 = models.CharField(max_length=50, null=True)
+
+
 
 # # 攻略评论
 class scommit(models.Model):

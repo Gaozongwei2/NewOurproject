@@ -43,4 +43,6 @@ urlpatterns = [
     # 更新攻略点赞状态
     url('updategood/(?P<sid>\w+)/(?P<userid>\w+)/$', views.updategood, name="updategood"),
 
+    url('addcontent/', views.addcontent, name="addcontent"),
+
 ]
