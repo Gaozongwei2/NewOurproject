@@ -9,6 +9,7 @@ from users.views import updatemark
 from django.http import *
 import json
 from . import models
+import  tools.toolmethod as time
 import tools.toolmethod
 
 
@@ -105,9 +106,7 @@ def insertdetail(request):
 # 卡片展示所有攻略
 def showall(request):
     try:
-        allstrategy = models.strategy.objects.filter().values('id', "title", 'time', "scover__url",
-                                                              "condition__condition", "good", "view", "state",
-                                                              "userid_id", "userid__username", "userid__icno__imageurl")
+        allstrategy = models.strategy.objects.filter().values('id', "title", 'time', "scover__url","condition__condition", "good", "view", "state","userid_id", "userid__username", "userid__icno__imageurl")
         listallstrategy = timechange(allstrategy)
         print(listallstrategy)
         return HttpResponse(listallstrategy)
@@ -154,11 +153,7 @@ def searchbyuserid(request):
     if request.method == "GET":
         try:
             uid = request.GET.get('userid')
-            strategy = models.strategy.objects.filter(userid=uid).values('scover__url', 'condition__strategy__title',
-                                                                         'condition__strategy__good',
-                                                                         'condition__strategy__view',
-                                                                         'condition__strategy__userid',
-                                                                         'condition__strategy__userid')
+            strategy = models.strategy.objects.filter(userid=uid).values('scover__url', 'condition__strategy__title', 'condition__strategy__good','condition__strategy__view', 'condition__strategy__userid','condition__strategy__userid')
             strategy = list(strategy)
             strategy = json.dumps(strategy)
             return HttpResponse(strategy)
@@ -279,6 +274,14 @@ def delete(request):
     except Exception as ex:
         print(ex)
         return JsonResponse({"code": "500"})
+
+# 获取用户的攻略评论
+def scommit(request,userid):
+    scommit = models.scommit.objects.filter(userid_id=userid).values('sid_id','commit','time','sid__scover__url')
+    scommit =list(scommit)
+    scommit = time.changestyleC(scommit)
+    return HttpResponse(scommit)
+
 # 2018.10.24
 # 普通搜索功能
 def searchbysome(request,index):

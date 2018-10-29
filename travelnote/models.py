@@ -36,7 +36,7 @@ class timages(models.Model):
 class tcollection(models.Model):
     userid = models.ForeignKey(to='users.user',to_field='id',on_delete=models.CASCADE)
     tid = models.ForeignKey(to='travelnote', to_field='id', on_delete=models.CASCADE)
-# # 攻略评论
+# # 游记评论
 class tcommit(models.Model):
     commit = models.TextField()
     time = models.DateTimeField(max_length=20)

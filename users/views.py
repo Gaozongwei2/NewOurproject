@@ -334,7 +334,7 @@ def unfocus(request, uid, uid_id):
 # 查询用户收藏攻略
 def colstrategy(request, uid):
     try:
-        colstr = models.colstrategy.objects.filter(cuser_id=uid).order_by("-id").values('cstrategy__title',                                                                              'cstrategy__content')
+        colstr = models.colstrategy.objects.filter(cuser_id=uid).order_by("-id").values('cstrategy__title', 'cstrategy__content')
         colstr = list(colstr)
         colstr = json.dumps(colstr)
         # for i in range(len(colstr)):
@@ -371,38 +371,45 @@ def uncolstrategy(request, cstrid, uid):
         print(ex)
         return JsonResponse({"code": "505"})
 
-# 查询用户积分和对应称号
-def usermark(request, uid):
-    try:
-        if request.method == "GET":
-            # 积分数
-            mark = models.user.objects.filter(id=uid).values('mark')
-            mark = list(mark)
-            print(mark)
-            # 积分称号
-            # 获取最大最小积分
-            rangemark = models.achievement.objects.filter().values('name', 'maxstandard', 'minstandard')
-            rangemark = list(rangemark)
-            for i in rangemark:
-                imax = i["maxstandard"]
-                imin = i["minstandard"]
+# 查询所有积分和对应称号
+def usermark(request):
 
-                # 根据最大积分最小积分查积分范围所在的称号
-                # 找到mark对应的范围
-                iname = models.user.objects.filter(mark__range=(int(imin), int(imax))).count()
-                if iname > 0:
-                    # 根据范围找到对应的称号
-                    achieve = models.achievement.objects.filter(minstandard=imin).values('name')
-                    achieve = list(achieve)
-                    print(achieve)
-            return JsonResponse({"mark": mark[0]["mark"], "achieve": list(achieve)[0]["name"]},
-                                json_dumps_params={"ensure_ascii": False})
+    # 积分称号
+    # 获取最大最小积分
+    rangemark = models.achievement.objects.filter().values('name', 'maxstandard', 'minstandard')
+    rangemark = json.dumps(list(rangemark))
+
+            # rangemark['mark'] = json.dumps(mark)
+    return HttpResponse(rangemark)
+
+    # 查询用户积分和对应称号
+def mark(request, uid):
+        # 积分数
+    mark = models.user.objects.filter(id=uid).values('mark')
+    mark = list(mark)
+
+    # 积分称号
+    # 获取最大最小积分
+    rangemark = models.achievement.objects.filter().values('name', 'maxstandard', 'minstandard')
+#     称号积分和最大最小值和当前积分封装到一起
+#
+    for i in list(rangemark):
+        imax = i["maxstandard"]
+        imin = i["minstandard"]
+        print(imax,imin)
+
+        # 根据最大积分最小积分查积分范围所在的称号
+        # 找到mark对应的范围
+        iname = models.user.objects.filter(mark__range=(int(imin), int(imax))).count()
+        # print(iname)
+        if iname > 0:
+            # 根据范围找到对应的称号
+            achieve = models.achievement.objects.filter(minstandard=imin).values('name')
+            achieve = list(achieve)
+
+    return JsonResponse({"mark": mark[0]["mark"],"achieve": list(achieve)[0]["name"]},json_dumps_params={"ensure_ascii": False})
             # return HttpResponse(mark)
-        elif request.method == "POST":
-            return JsonResponse({"code": "500"})
-    except Exception as ex:
-        print(ex)
-        return JsonResponse({"code": "505"})
+
 
 # 更新用户积分
 def updatemark(request, uid, marks):
@@ -471,3 +478,37 @@ def searcharea(request,city):
                         res = area
         result = json.dumps(res)
         return HttpResponse(result)
+
+
+
+
+
+
+
+    # ///////////////////////攻略/////////////////////////////
+
+    # 查询用户是否已经点赞过某个攻略,以及当前攻略的被点赞数
+def hasgood(request, sid, userid):
+        goodcount = models.goods.objects.filter(id=sid, userid_id=userid).values('file1', 'good')
+        goodcount = list(goodcount)
+        if goodcount[0]["file1"] == '0':
+            goodcount[0]["file1"] = '点赞'
+        else:
+            goodcount[0]["file1"] = '已点赞'
+        return JsonResponse({"data": goodcount})
+
+    # 更新用户的点赞状态和点赞数量
+def updategood(request, sid, userid):
+        if request.method == "POST":
+            # print(111)
+            goods = request.POST.get("good")
+            print('这里是点赞数量' + goods)
+
+            updatecount = models.strategy.objects.filter(id=sid).update(good=goods, file1=1)
+            return HttpResponse(updatecount)
+        else:
+            return HttpResponse("这里是请求")
+
+
+
+

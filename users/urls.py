@@ -42,6 +42,12 @@ urlpatterns = [
     #简单查询
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
+# 查看所有的积分和称号
+    url('usermark/', views.usermark, name="usermark"),
+
+    # 查询当前用户积分
+    url('mark/(?P<uid>\w+)/$', views.mark, name="mark"),
+
     # 推荐地点
     url('searcharea/(?P<city>\w+)/$', views.searcharea, name="searcharea"),
 
@@ -49,5 +55,11 @@ urlpatterns = [
     url('updatemark/(?P<uid>\w+)/(?P<marks>\w+)/$', views.updatemark, name="updatemark"),
 
 
+
+#  用户是否点赞过某个攻略
+    # 查询用户是否已经点赞过某个攻略
+    url('hasgood/(?P<sid>\w+)/(?P<userid>\w+)/$', views.hasgood, name="hasgood"),
+    # 更新攻略点赞状态
+    url('updategood/(?P<sid>\w+)/(?P<userid>\w+)/$', views.updategood, name="updategood"),
 
 ]

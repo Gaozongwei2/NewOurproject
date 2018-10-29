@@ -31,10 +31,16 @@ urlpatterns = [
     url(r'update/(?P<postid>\d+)/$', views.update, name="update"),
     #  删除攻略
     url(r'delete/', views.delete, name="delete"),
+
+    # 查询攻略的评论
+    url(r'scommit/(?P<userid>\w+)/$', views.scommit, name="scommit"),
+
 # 2018.10.24
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
     url('addcontent/', views.addcontent, name="addcontent"),
     url('addstrategy/', views.addstrategy, name="addstrategy"),
+    # 查询攻略的具体内容
+    url('detailcontent/(?P<sid>\w+)/$', views.detailcontent, name="detailcontent"),
 
 ]
