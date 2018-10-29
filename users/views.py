@@ -221,8 +221,8 @@ def myfocusnum(request,id):
 def usertravelnotes(request,uid):
     try:
         # 时间 标题 点赞数 浏览量  封皮
-        utrav = models.travelnote.objects.filter(userid_id = uid).values( 'id','title','time','good','view','cover__url','content')
-        utrav = list(utrav)[:5]
+        utrav = models.travelnote.objects.filter(userid_id = uid).values( 'id','title','time','good','view','cover__url','content',"condition__condition","contentall_id")
+        utrav = list(utrav)
         for item in utrav:
             item["time"] = item["time"].strftime("%Y-%m-%d")
         return JsonResponse(utrav, safe=False)

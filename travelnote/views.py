@@ -99,8 +99,17 @@ def savecontent(request):
         return HttpResponse(nncontent.id)
     else:
         return HttpResponse("这里是请求")
-
-
+# 2018.10.29
+# 更新游记内容
+def updatetravelnote(request):
+    if request.method == "POST":
+        id = request.POST.get("contentid")
+        ncontent = request.POST.get("content")
+        print(ncontent)
+        nncontent = models.tcontent.objects.filter(id=id).update(nncontent=ncontent )
+        return HttpResponse(nncontent.id)
+    else:
+        return HttpResponse("这里是请求")
 
 # 保存整个游记
 def savetravelnote(request):
@@ -138,6 +147,22 @@ def savetravelnote(request):
     else:
         return HttpResponse("这里是请求")
 
+# 删除游记
+def deletetravelnote(request,tid):
+    try:
+        if request.method == "GET":
+            conid = models.travelnote.objects.filter(id=tid).values("contentall_id")
+            conid = json.dumps(list(conid))
+            conid = json.loads(conid)[0]["contentall_id"]
+            print(conid)
+
+            res = models.travelnote.objects.filter(id=tid).delete()
+            res1 = models.tcontent.objects.filter(id = conid).delete()
+            print(res1)
+            res = json.dumps(list(res))
+            return HttpResponse(res)
+    except Exception as ex:
+        print(ex)
 
 # 取出游记内容
 def getcontent(request, id):
@@ -162,10 +187,8 @@ def storagereview(request, tid, uid):
 # 根据tid查评论
 def searchreview(request, tid):
     try:
-        userreview = models.tcommit.objects.filter(tid_id=tid).values("commit", "time", "tid__userid__username",
-                                                                      'tid__userid__icno')
+        userreview = models.tcommit.objects.filter(tid_id=tid).values("commit", "time", "tid__userid__username",                                                           'tid__userid__icno')
         data = list(userreview)
-
         return JsonResponse({'data': data})
     except Exception as ex:
         print(ex)
@@ -174,15 +197,9 @@ def searchreview(request, tid):
 
 # 根据tid更新浏数量
 def updatelooknum(request, tid):
-    # print(2222222)
     if request.method == "POST":
         res = request.POST.get('view')
-        # print(1111)
         print(res)
-
-        # newdate = {
-        #     "view":"177777"
-        # }
         affect_row = models.travelnote.objects.filter(id=tid).update(view=res)
         return JsonResponse({"code": "200"})
 

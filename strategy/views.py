@@ -257,22 +257,7 @@ def update(request, postid):
     try:
         if request.method == "POST":
             newdate = json.loads(request.body)
-
-            # newdata = {
-            #     "title":"newdate",
-            #     "state":"hhhh",
-            #     "condition_id":2,
-            # #     封面
-            #     "cover":"oooo",
-            # #     图片
-            #     "img":{
-            #         "img1":"11111",
-            #         "img2":"22222"
-            #     }
-            # }
-
-            affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"],
-                                                                           state=newdate["state"],                                                             condition_id=newdate["condition_id"])
+            affect_rows = models.strategy.objects.filter(id=postid).update(title=newdate["title"],state=newdate["state"],condition_id=newdate["condition_id"])
             affect_rowsurl = models.scover.objects.filter(id=postid).update(url=newdate["cover"])
             affect_rowsimg = models.simages.objects.filter(id=postid).update(url=newdate["img"]["img1"])
         return JsonResponse({"code": "200"})
@@ -351,32 +336,32 @@ def delete(request):
         return JsonResponse({"code": "500"})
 
 # 2018.10.27
+# 保存攻略大表
+def addstrategy(request):
+    try:
+        if request.method =="POST":
+            strategy = request.POST.get("strategy")
+            strategy = json.loads(strategy)
+            result = models.strategy.objects.create(**strategy[0])
+            # print(result.id)
+            # print(type(strategy))
+            return HttpResponse(result.id)
+    except Exception as ex:
+        print(ex)
 # 保存攻略内容
 def addcontent(request):
     try:
         if request.method == "POST":
-            title = request.POST.get("title")
-            print("haha")
-            print(title)
-            # contents = request.POST.get("ccontent")
-            # address = request.POST.get("address")
-            # play = request.POST.get("play")
-            # playphoto = request.POST.get("playphoto")
-            # traffic = request.POST.get("traffic")
-            # ticket = request.POST.get("ticket")
-            # food = request.POST.get("food")
-            # foodphoto = request.POST.get("foodphoto")
-            # sid = request.path.get("sid")
+            strategys = request.POST.get("strategy")
+            strategys = json.loads(strategys)
+            result = "haha"
+            for item in strategys:
+                print(item)
+                result = models.scontent.objects.create(**item)
+            print(result)
 
-            # content = models.scontent.objects.create(
-            #     contents=contents,address=address,play=play, playphoto=playphoto, traffic=traffic,
-            #     ticket=ticket,food=food,foodphoto=foodphoto,sid_id=sid
-            # )
-            # print(content)
-
-
+            return HttpResponse(result)
         else:
             return HttpResponse("添加内容")
-
     except Exception as ex:
         print(ex)

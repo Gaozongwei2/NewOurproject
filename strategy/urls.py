@@ -35,5 +35,6 @@ urlpatterns = [
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
     url('addcontent/', views.addcontent, name="addcontent"),
+    url('addstrategy/', views.addstrategy, name="addstrategy"),
 
 ]

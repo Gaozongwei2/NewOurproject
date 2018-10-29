@@ -14,6 +14,9 @@ urlpatterns = [
     url('savecontent/',views.savecontent, name="savecontent"),
     url('getcontent/(?P<id>\w+)/$',views.getcontent, name="getcontent"),
     url('savetravelnote/',views.savetravelnote, name="savetravelnote"),
+    # 删除游记
+    url('deletetravelnote/(?P<tid>\w+)/$',views.deletetravelnote, name="deletetravelnote"),
+
 
     url('storagereview/(?P<tid>\w+)/(?P<uid>\w+)/$', views.storagereview, name="storagereview"),
     # 更新浏览数量

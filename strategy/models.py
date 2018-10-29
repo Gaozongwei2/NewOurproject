@@ -28,23 +28,31 @@ class strategy(models.Model):
     file2 = models.CharField(max_length=100, null=True)
 # 攻略内容
 class scontent(models.Model):
-    contents = models.TextField(default='not have message')
+    contents = models.TextField(default='not have message',null=True)
+    # 地点)
     # 优点
-    advantage = models.TextField()
+    advantage = models.TextField(null=True)
     # 地点
-    address = models.TextField()
+    address = models.TextField(null=True)
+    # 地点)
     # 游玩攻略
-    play = models.TextField()
+    play = models.TextField(null=True)
+    # 地点)
     # 游玩图片
-    playphoto = models.TextField()
+    playphoto = models.TextField(null=True)
+    # 地点)
     # 交通攻略
-    traffic = models.TextField()
+    traffic = models.TextField(null=True)
+    # 地点)
     # 门票攻略
-    ticket = models.TextField()
+    ticket = models.TextField(null=True)
+    # 地点)
     # 餐饮攻略
-    food = models.TextField()
+    food = models.TextField(null=True)
+    # 地点)
     # 餐饮图片
-    foodphoto = models.TextField()
+    foodphoto = models.TextField(null=True)
+    # 地点)
     # 对应攻略的外键
     sid = models.ForeignKey(to='strategy', to_field='id', on_delete=models.CASCADE,default=1)
     file1 = models.CharField(max_length=50, null=True)

@@ -33,7 +33,18 @@ class focus(models.Model):
     userid = models.IntegerField()
     uid = models.ForeignKey(to='user', to_field= 'id', on_delete=models.CASCADE)
     # 这个人关注的人的id
+# 攻略点赞表
+class goods(models.Model):
+    # 一个人的id
+    userid = models.IntegerField()
+    sid = models.ForeignKey(to='strategy.strategy', to_field= 'id', on_delete=models.CASCADE)
 
+# 游记点赞表
+class goodt(models.Model):
+    # 一个人的id
+    userid = models.IntegerField()
+    tid = models.ForeignKey(to='travelnote.travelnote', to_field='id', on_delete=models.CASCADE)
+    # 这个人关注的人的id
 
 # 攻略收藏表
 class colstrategy(models.Model):
