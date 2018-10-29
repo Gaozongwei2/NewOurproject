@@ -311,30 +311,6 @@ def searchbysome(request,index):
         return HttpResponse(tport)
 
 
-# 查询用户是否已经点赞过某个攻略,以及当前攻略的被点赞数
-def hasgood(request, sid, userid):
-    goodcount = models.strategy.objects.filter(id=sid, userid_id=userid).values('file1', 'good')
-    goodcount = list(goodcount)
-    if goodcount[0]["file1"] == '0':
-        goodcount[0]["file1"] = '点赞'
-    else:
-        goodcount[0]["file1"] = '已点赞'
-
-    return JsonResponse({"data": goodcount})
-
-# 更新用户的点赞状态
-def updategood(request, sid, userid):
-    if request.method == "POST":
-        # print(111)
-        goods = request.POST.get("good")
-        print(goods)
-        updatecount = models.strategy.objects.filter(id=sid, userid_id=userid).update(good=goods, file1=1)
-        return HttpResponse(goods)
-    else:
-        return HttpResponse("这里是请求")
-
-
-
 # 根据postid更新攻略信息
 def update(request,postid):
     try:
@@ -406,3 +382,24 @@ def addcontent(request):
 
     except Exception as ex:
         print(ex)
+
+# 查询攻略的具体内容，并得出该攻略总共游玩几天,以及攻略的标题
+def detailcontent(request,sid):
+    # 攻略具体内容
+    decontent = models.scontent.objects.filter(sid_id=sid).values()
+    # 该攻略总共玩几天
+    day = models.scontent.objects.filter(sid_id=sid).count()
+
+    # 攻略的标题
+    title = models.strategy.objects.filter(id=sid).values('title')
+    data={
+        "content":list(decontent),
+        "day":day,
+        "title":list(title),
+    }
+
+    # return HttpResponse(json.dumps(list(data)))
+    return JsonResponse(data)
+
+
+

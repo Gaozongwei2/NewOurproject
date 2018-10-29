@@ -38,11 +38,8 @@ urlpatterns = [
 # 2018.10.24
     url('searchbysome/(?P<index>\w+)/$', views.searchbysome, name="searchbysome"),
 
-    # 查询用户是否已经点赞过某个攻略
-    url('hasgood/(?P<sid>\w+)/(?P<userid>\w+)/$', views.hasgood, name="hasgood"),
-    # 更新攻略点赞状态
-    url('updategood/(?P<sid>\w+)/(?P<userid>\w+)/$', views.updategood, name="updategood"),
-
     url('addcontent/', views.addcontent, name="addcontent"),
+    # 查询攻略的具体内容
+    url('detailcontent/(?P<sid>\w+)/$', views.detailcontent, name="detailcontent"),
 
 ]

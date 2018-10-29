@@ -478,3 +478,37 @@ def searcharea(request,city):
                         res = area
         result = json.dumps(res)
         return HttpResponse(result)
+
+
+
+
+
+
+
+    # ///////////////////////攻略/////////////////////////////
+
+    # 查询用户是否已经点赞过某个攻略,以及当前攻略的被点赞数
+def hasgood(request, sid, userid):
+        goodcount = models.goods.objects.filter(id=sid, userid_id=userid).values('file1', 'good')
+        goodcount = list(goodcount)
+        if goodcount[0]["file1"] == '0':
+            goodcount[0]["file1"] = '点赞'
+        else:
+            goodcount[0]["file1"] = '已点赞'
+        return JsonResponse({"data": goodcount})
+
+    # 更新用户的点赞状态和点赞数量
+def updategood(request, sid, userid):
+        if request.method == "POST":
+            # print(111)
+            goods = request.POST.get("good")
+            print('这里是点赞数量' + goods)
+
+            updatecount = models.strategy.objects.filter(id=sid).update(good=goods, file1=1)
+            return HttpResponse(updatecount)
+        else:
+            return HttpResponse("这里是请求")
+
+
+
+

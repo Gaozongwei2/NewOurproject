@@ -63,7 +63,6 @@ def searchbysome(request,index):
             tport = tools.toolmethod.changestyle(tport)
         return HttpResponse(tport)
 
-
 # 用户查询自己的游记数量
 def searchcount(request,userid):
     try:
@@ -73,7 +72,6 @@ def searchcount(request,userid):
     except Exception as ex:
         print(ex)
         return JsonResponse({"code": "500"})
-
 
 # 2018.10.24
 # 保存游记内容
@@ -87,13 +85,10 @@ def savecontent(request):
     else:
         return HttpResponse("这里是请求")
 
-
-
 # 保存整个游记
 def savetravelnote(request):
     if request.method == "POST":
         title = request.POST.get("title")
-        print(title)
         state = request.POST.get("state")
         content = request.POST.get("content")
         time = request.POST.get("time")
@@ -103,9 +98,6 @@ def savetravelnote(request):
         userid_id = request.POST.get('userid_id')
         view = request.POST.get('view')
         content_id = request.POST.get('content_id')
-
-
-        print(state)
 
         nncontent = models.travelnote.objects.create(
             title=title,
@@ -126,7 +118,7 @@ def savetravelnote(request):
         return HttpResponse("这里是请求")
 
 
-# 取出游记内容
+# 取出游记内容(废掉)
 def getcontent(request, id):
     if request.method == "GET":
         content = json.dumps(list(models.tcontent.objects.filter(id=id).values("contentt"))[0])
@@ -244,28 +236,8 @@ def updategood(request,tid,userid):
 
 # 根据游记id显示里面具体的内容
 def detailcontent(request,tid):
-    detailcontent =  models.tcontent.objects.filter(id=tid,userid_id=userid).update(good=goods,file1=1)
+    detailcontent =  models.travelnote.objects.filter(id=tid).values('contentall__contentt')
+    detailcontent = list(detailcontent)
+    return JsonResponse({"code":detailcontent})
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        return JsonResponse({"code": "500"})
