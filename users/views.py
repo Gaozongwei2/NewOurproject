@@ -489,23 +489,35 @@ def searcharea(request,city):
 
     # 查询用户是否已经点赞过某个攻略,以及当前攻略的被点赞数
 def hasgood(request, sid, userid):
-        goodcount = models.goods.objects.filter(id=sid, userid_id=userid).values('file1', 'good')
-        goodcount = list(goodcount)
-        if goodcount[0]["file1"] == '0':
-            goodcount[0]["file1"] = '点赞'
-        else:
-            goodcount[0]["file1"] = '已点赞'
-        return JsonResponse({"data": goodcount})
+        # 判断用户是否点赞
+        isgood = models.goods.objects.filter(sid_id=sid, userid=userid).count()
+        # 查询该攻略被点赞过几次
+        goodcount = models.goods.objects.filter(sid_id=sid).count()
 
-    # 更新用户的点赞状态和点赞数量
+        data={
+            "isgood":isgood,
+            "goodcount":goodcount
+        }
+        return JsonResponse(data)
+
+    # 添加用户点赞过这个游记并更新攻略表里点赞的数量
 def updategood(request, sid, userid):
         if request.method == "POST":
-            # print(111)
+            # 点赞的数量
             goods = request.POST.get("good")
-            print('这里是点赞数量' + goods)
+            # goods = 1
+            # print('这里是点赞数量' + goods)
 
-            updatecount = models.strategy.objects.filter(id=sid).update(good=goods, file1=1)
-            return HttpResponse(updatecount)
+            # 添加用户点赞过这个游记
+            data = {
+                "userid":userid,
+                "sid_id":sid
+            }
+            res = models.goods.objects.create(**data)
+            # 更新攻略表里点赞的数量
+            updatecount = models.strategy.objects.filter(id=sid).update(good=goods)
+
+            return HttpResponse('成功')
         else:
             return HttpResponse("这里是请求")
 

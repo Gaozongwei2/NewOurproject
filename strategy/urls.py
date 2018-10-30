@@ -42,5 +42,4 @@ urlpatterns = [
     url('addstrategy/', views.addstrategy, name="addstrategy"),
     # 查询攻略的具体内容
     url('detailcontent/(?P<sid>\w+)/$', views.detailcontent, name="detailcontent"),
-
 ]

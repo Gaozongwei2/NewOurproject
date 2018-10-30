@@ -59,7 +59,7 @@ urlpatterns = [
 #  用户是否点赞过某个攻略
     # 查询用户是否已经点赞过某个攻略
     url('hasgood/(?P<sid>\w+)/(?P<userid>\w+)/$', views.hasgood, name="hasgood"),
-    # 更新攻略点赞状态
+    # 添加用户点赞过这个游记并更新攻略表里点赞的数量
     url('updategood/(?P<sid>\w+)/(?P<userid>\w+)/$', views.updategood, name="updategood"),
 
 ]

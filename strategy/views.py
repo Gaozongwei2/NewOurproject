@@ -368,3 +368,19 @@ def addcontent(request):
             return HttpResponse("添加内容")
     except Exception as ex:
         print(ex)
+
+# 查询攻略的具体内容，并得出该攻略总共游玩几天,以及攻略的标题
+def detailcontent(request,sid):
+    # 攻略具体内容
+    decontent = models.scontent.objects.filter(sid_id=sid).values()
+    # 该攻略总共玩几天
+    day = models.scontent.objects.filter(sid_id=sid).count()
+     # 攻略的标题
+    title = models.strategy.objects.filter(id=sid).values('title')
+    data={
+        "content":list(decontent),
+        "day":day,
+        "title":list(title),
+    }
+     # return HttpResponse(json.dumps(list(data)))
+    return JsonResponse(data)
